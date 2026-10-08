@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>DeliveryPro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--o:#F97316;--lo:#FED7AA;--bg:#FFF7ED;--card:#fff;--tx:#1f2937;--mu:#6b7280;--bd:#fde4cc;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1c1410;--card:#2a1e17;--tx:#f5e9df;--mu:#b8a496;--bd:#44301f}}
+:root[data-theme=dark]{--bg:#1c1410;--card:#2a1e17;--tx:#f5e9df;--mu:#b8a496;--bd:#44301f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
+#app{display:flex;min-height:100vh}
+aside{width:220px;background:var(--card);border-right:1px solid var(--bd);padding:14px 10px;flex-shrink:0}
+.logo{font-weight:700;font-size:20px;color:var(--o);padding:6px 10px 14px}
+aside a{display:block;padding:9px 12px;border-radius:10px;color:var(--tx);cursor:pointer;margin-bottom:2px}
+aside a:hover{background:var(--lo);color:#7c2d12}aside a.on{background:var(--o);color:#fff}
+main{flex:1;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+#c{padding:20px}
+h2{margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+.stat b{display:block;font-size:24px;color:var(--o)}.stat span{color:var(--mu)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mu);font-weight:500}
+button,.btn{background:var(--o);color:#fff;border:0;border-radius:8px;padding:7px 12px;cursor:pointer;font:inherit}
+button.g{background:var(--lo);color:#7c2d12}button.d{background:#dc2626}button.s{padding:4px 8px;font-size:12px}
+input,select,textarea{font:inherit;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);width:100%}
+select.in{width:auto;padding:4px}
+.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}.bar input{max-width:240px}
+.b{padding:2px 9px;border-radius:99px;font-size:12px;background:var(--lo);color:#7c2d12}
+.b.Delivered,.b.Available,.b.Paid{background:#bbf7d0;color:#14532d}.b.Cancelled,.b.Offline,.b.Refunded{background:#fecaca;color:#7f1d1d}.b.OnDelivery,.b.Break{background:#fef08a;color:#713f12}
+#m{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+#m .card{width:100%;max-width:420px;max-height:90vh;overflow:auto}
+label{display:block;margin:8px 0 3px;color:var(--mu);font-size:12px}
+.steps{display:flex;gap:6px;margin:14px 0}.st{flex:1;text-align:center;padding:10px 4px;border-radius:10px;background:var(--lo);opacity:.5;font-size:12px}.st.on{background:var(--o);color:#fff;opacity:1}
+#t{position:fixed;right:14px;bottom:14px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;display:none;z-index:99;max-width:280px}
+#auth{max-width:380px;margin:8vh auto;padding:16px}
+@media(max-width:760px){#app{flex-direction:column}aside{width:100%;display:flex;overflow-x:auto;border-right:0;padding:8px}.logo{display:none}aside a{white-space:nowrap}#c{padding:12px}}
+</style></head><body>
+<div id="root"></div><div id="m"></div><div id="t"></div>
+<script>
+const ST=['Pending','Preparing','Out for Delivery','Delivered','Cancelled'],PS=['Available','On Delivery','Offline','Break'],PM=['Credit Card','UPI','Cash on Delivery','Net Banking','Mobile Wallet'];
+const cls=s=>s.replace(/ /g,'');
+let R=[{id:1,name:'Spice Route',cuisine:'Indian',loc:'Anna Nagar',phone:'9840011111',x:20,y:30},{id:2,name:'Pizza Hub',cuisine:'Italian',loc:'T Nagar',phone:'9840022222',x:60,y:20},{id:3,name:'Dragon Wok',cuisine:'Chinese',loc:'Adyar',phone:'9840033333',x:75,y:70}];
+let P=[{id:1,name:'Ravi Kumar',phone:'9000000001',status:'Available'},{id:2,name:'Suresh M',phone:'9000000002',status:'On Delivery'},{id:3,name:'Karthik S',phone:'9000000003',status:'Offline'}];
+let C=[{id:1,name:'Priya N',email:'priya@mail.com',phone:'9111111111',pref:'Veg',x:40,y:50},{id:2,name:'Arjun R',email:'arjun@mail.com',phone:'9222222222',pref:'Spicy',x:80,y:40},{id:3,name:'Meena K',email:'meena@mail.com',phone:'9333333333',pref:'No onion',x:15,y:80}];
+let O=[{id:101,cust:1,rest:1,items:'Biryani x2',amt:520,status:'Delivered',pay:'UPI',paid:'Paid',partner:1,eta:0},{id:102,cust:2,rest:2,items:'Margherita x1',amt:350,status:'Out for Delivery',pay:'Credit Card',paid:'Paid',partner:2,eta:15},{id:103,cust:3,rest:3,items:'Noodles x2',amt:410,status:'Preparing',pay:'Cash on Delivery',paid:'Pending',partner:2,eta:30},{id:104,cust:1,rest:2,items:'Pasta x1',amt:290,status:'Pending',pay:'Mobile Wallet',paid:'Paid',partner:0,eta:40}];
+let V=[{id:1,type:'Restaurant',target:'Spice Route',rating:5,text:'Great biryani!'},{id:2,type:'Delivery Partner',target:'Ravi Kumar',rating:4,text:'Fast delivery'}];
+let U=[{name:'Admin',email:'admin@demo.com',pw:'admin123',role:'Admin'},{name:'Customer',email:'cust@demo.com',pw:'cust123',role:'Customer'}];
+let me=null,pg='dashboard',ch=[],nid=200,trk=102,flt='',reg=false;
+const NAV={Admin:['dashboard','orders','restaurants','partners','tracking','routes','payments','customers','reviews','reports'],Restaurant:['dashboard','orders','restaurants','reviews','reports'],'Delivery Partner':['orders','tracking','routes','partners'],Customer:['orders','tracking','reviews','customers']};
+const ICON={dashboard:'📊',orders:'📦',restaurants:'🍽️',partners:'🚴',tracking:'📍',routes:'🗺️',payments:'💳',customers:'👥',reviews:'⭐',reports:'📄'};
+const $=s=>document.querySelector(s),nm=(a,i)=>(a.find(x=>x.id==i)||{name:'—'}).name;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t){const e=$('#t');e.textContent=t;e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',2800)}
+function mail(o){toast('📧 Email sent to '+nm(C,o.cust)+': Order #'+o.id+' is '+o.status)}
+function theme(){const r=document.documentElement;r.dataset.theme=(r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme:dark)').matches))?'light':'dark'}
+function auth(){$('#root').innerHTML=`<div id=auth class=card><h2 style="color:var(--o)">🚴 DeliveryPro</h2><p style="color:var(--mu)">${reg?'Create account':'Login'} — demo: admin@demo.com / admin123</p>${reg?'<label>Name</label><input id=an>':''}<label>Email</label><input id=ae><label>Password</label><input id=ap type=password><label>Role</label><select id=ar>${Object.keys(NAV).map(r=>`<option>${r}</option>`)}</select><p><button onclick=doAuth() style="width:100%">${reg?'Register':'Login'}</button></p><a style="color:var(--o);cursor:pointer" onclick="reg=!reg;auth()">${reg?'Have an account? Login':'New here? Register'}</a></div>`}
+function doAuth(){const e=$('#ae').value.trim(),p=$('#ap').value,r=$('#ar').value;if(!e||!p)return toast('Fill all fields');
+if(reg){const n=$('#an').value.trim();if(!n)return toast('Enter name');if(U.find(u=>u.email==e))return toast('Email already exists');U.push({name:n,email:e,pw:p,role:r});reg=false;toast('Registered! Please login');return auth()}
+const u=U.find(u=>u.email==e&&u.pw==p);if(!u)return toast('Invalid credentials');
+me={...u,role:u.role==='Admin'?'Admin':r};if(u.role==='Admin'&&r!=='Admin')me.role=r;pg=NAV[me.role][0];shell()}
+function shell(){$('#root').innerHTML=`<div id=app><aside><div class=logo>🚴 DeliveryPro</div>${NAV[me.role].map(p=>`<a id=n-${p} onclick="go('${p}')">${ICON[p]} ${p[0].toUpperCase()+p.slice(1)}</a>`).join('')}</aside><main><div class=top><b>${me.role} · ${esc(me.name)}</b><span><button class=g onclick=theme()>🌓</button> <button onclick="me=null;auth()">Logout</button></span></div><div id=c></div></main></div>`;go(pg)}
+function go(p){pg=p;document.querySelectorAll('aside a').forEach(a=>a.classList.toggle('on',a.id==='n-'+p));ch.forEach(c=>c.destroy());ch=[];$('#c').innerHTML=PG[p]();if(AFTER[p])AFTER[p]()}
+function modal(title,fields,vals,save){const m=$('#m');m.style.display='flex';m.innerHTML=`<div class=card><h3>${title}</h3>${fields.map(([k,l,t,o])=>`<label>${l}</label>`+(t==='select'?`<select id=f-${k}>${o.map(x=>`<option value="${Array.isArray(x)?x[0]:x}" ${(vals[k]==(Array.isArray(x)?x[0]:x))?'selected':''}>${Array.isArray(x)?x[1]:x}</option>`).join('')}</select>`:`<input id=f-${k} type=${t||'text'} value="${esc(vals[k]??'')}">`)).join('')}<p><button onclick=sv()>Save</button> <button class=g onclick=cm()>Cancel</button></p></div>`;
+window.sv=()=>{const v={};for(const[k,,t]of fields){v[k]=$('#f-'+k).value;if(t==='number'||k.match(/Id$|^(cust|rest|partner)$/))v[k]=+v[k];if(v[k]===''){return toast('Fill all fields')}}save(v);cm();go(pg)}}
+function cm(){$('#m').style.display='none'}
+const tbl=(h,rows)=>`<div class="card tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')||'<tr><td>No data</td></tr>'}</table></div>`;
+const bar=(btn)=>`<div class=bar><input placeholder="🔍 Search..." value="${esc(flt)}" oninput="flt=this.value;go(pg);$('.bar input').focus()">${btn}</div>`;
+const mt=(o)=>!flt||JSON.stringify(o).toLowerCase().includes(flt.toLowerCase());
+const acts=(f,id)=>`<button class="s g" onclick="${f}Edit(${id})">Edit</button> <button class="s d" onclick="${f}Del(${id})">Del</button>`;
+const sel=(a,v,fn)=>`<select class=in onchange="${fn}(this.value)">${a.map(x=>`<option ${x==v?'selected':''}>${x}</option>`)}</select>`;
+const cur=n=>'₹'+n.toLocaleString('en-IN');
+const rev=()=>O.filter(o=>o.paid==='Paid').reduce((s,o)=>s+o.amt,0);
+const ofields=()=>[['cust','Customer','select',C.map(c=>[c.id,c.name])],['rest','Restaurant','select',R.map(r=>[r.id,r.name])],['items','Items'],['amt','Amount (₹)','number'],['pay','Payment','select',PM],['eta','ETA (min)','number']];
+function oAdd(){modal('New Order',ofields(),{},v=>{O.push({...v,id:++nid,status:'Pending',paid:v.pay==='Cash on Delivery'?'Pending':'Paid',partner:0});toast('Order #'+nid+' created')})}
+function oEdit(i){const o=O.find(x=>x.id==i);modal('Edit Order #'+i,ofields(),o,v=>Object.assign(o,v))}
+function oDel(i){if(confirm('Delete order?')){O=O.filter(x=>x.id!=i);go(pg)}}
+function oSt(i,s){const o=O.find(x=>x.id==i);o.status=s;if(s==='Delivered'){o.eta=0;if(o.paid==='Pending')o.paid='Paid'}mail(o);go(pg)}
+function oAs(i,p){const o=O.find(x=>x.id==i);o.partner=+p;mail(o)}
+function rEdit(i){const r=R.find(x=>x.id==i)||{};modal(i?'Edit Restaurant':'Add Restaurant',[['name','Name'],['cuisine','Cuisine'],['loc','Location'],['phone','Contact'],['x','Map X (0-100)','number'],['y','Map Y (0-100)','number']],r,v=>i?Object.assign(r,v):R.push({...v,id:++nid}))}
+function rDel(i){if(confirm('Delete?')){R=R.filter(x=>x.id!=i);go(pg)}}
+function pEdit(i){const p=P.find(x=>x.id==i)||{};modal(i?'Edit Partner':'Add Partner',[['name','Name'],['phone','Phone'],['status','Status','select',PS]],p,v=>i?Object.assign(p,v):P.push({...v,id:++nid}))}
+function pDel(i){if(confirm('Delete?')){P=P.filter(x=>x.id!=i);go(pg)}}
+function cEdit(i){const c=C.find(x=>x.id==i)||{};modal(i?'Edit Customer':'Add Customer',[['name','Name'],['email','Email','email'],['phone','Phone'],['pref','Preferences'],['x','Map X (0-100)','number'],['y','Map Y (0-100)','number']],c,v=>i?Object.assign(c,v):C.push({...v,id:++nid}))}
+function cDel(i){if(confirm('Delete?')){C=C.filter(x=>x.id!=i);go(pg)}}
+function pStat(i,s){P.find(x=>x.id==i).status=s;toast('Partner status updated')}
+function cHist(i){const l=O.filter(o=>o.cust==i).map(o=>`#${o.id} ${o.items} — ${o.status} (${cur(o.amt)})`).join('\n');alert(nm(C,i)+' — Order History\n\n'+(l||'No orders'))}
+function refund(i){const o=O.find(x=>x.id==i);if(confirm('Refund '+cur(o.amt)+'?')){o.paid='Refunded';if(o.status!=='Delivered')o.status='Cancelled';toast('Refund processed');go(pg)}}
+function addRev(){modal('Add Review',[['type','Type','select',['Restaurant','Delivery Partner']],['target','Name','select',[...R.map(r=>r.name),...P.map(p=>p.name)]],['rating','Rating (1-5)','number'],['text','Comment']],{rating:5},v=>V.push({...v,id:++nid,rating:Math.min(5,Math.max(1,v.rating))}))}
+function csv(name,h,rows){const t=[h,...rows].map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download=name+'.csv';a.click()}
+function exp(k){if(k==='delivery')csv('delivery',['Order','Customer','Restaurant','Status','Partner'],O.map(o=>[o.id,nm(C,o.cust),nm(R,o.rest),o.status,nm(P,o.partner)]));
+if(k==='revenue')csv('revenue',['Restaurant','Orders','Revenue'],R.map(r=>{const l=O.filter(o=>o.rest==r.id&&o.paid==='Paid');return[r.name,l.length,l.reduce((s,o)=>s+o.amt,0)]}));
+if(k==='perf')csv('performance',['Partner','Deliveries','Status'],P.map(p=>[p.name,O.filter(o=>o.partner==p.id&&o.status==='Delivered').length,p.status]))}
+function adv(){const o=O.find(x=>x.id==trk),n=ST.indexOf(o.status);if(n<3)oSt(o.id,ST[n+1])}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+const PG={
+dashboard(){const a=O.filter(o=>o.status==='Out for Delivery').length,d=O.filter(o=>o.status==='Delivered').length;return`<h2>Dashboard</h2><div class=grid>${[['Total Orders',O.length],['Revenue',cur(rev())],['Active Deliveries',a],['Delivered',d],['Partners Available',P.filter(p=>p.status==='Available').length],['Avg Rating',(V.reduce((s,v)=>s+v.rating,0)/(V.length||1)).toFixed(1)+' ⭐']].map(([l,v])=>`<div class="card stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div><div class=two><div class=card><canvas id=c1></canvas></div><div class=card><canvas id=c2></canvas></div></div>`},
+orders(){return`<h2>Order Management</h2>${bar(me.role==='Delivery Partner'?'':'<button onclick=oAdd()>+ New Order</button>')}`+tbl(['ID','Customer','Restaurant','Items','Amount','Status','Partner','ETA',''],O.filter(mt).map(o=>[o.id,nm(C,o.cust),nm(R,o.rest),esc(o.items),cur(o.amt),me.role==='Customer'?`<span class="b ${cls(o.status)}">${o.status}</span>`:sel(ST,o.status,`oSt.bind(0,${o.id})`),me.role==='Admin'||me.role==='Restaurant'?`<select class=in onchange="oAs(${o.id},this.value)"><option value=0>Unassigned</option>${P.filter(p=>p.status!=='Offline').map(p=>`<option value=${p.id} ${o.partner==p.id?'selected':''}>${p.name}</option>`)}</select>`:nm(P,o.partner),o.eta?o.eta+' min':'—',me.role==='Customer'||me.role==='Delivery Partner'?'':acts('o',o.id)]))},
+restaurants(){return`<h2>Restaurants</h2>${bar('<button onclick=rEdit(0)>+ Add Restaurant</button>')}`+tbl(['Name','Cuisine','Location','Contact',''],R.filter(mt).map(r=>[esc(r.name),esc(r.cuisine),esc(r.loc),esc(r.phone),acts('r',r.id)]))},
+partners(){return`<h2>Delivery Partners</h2>${bar('<button onclick=pEdit(0)>+ Add Partner</button>')}`+tbl(['Name','Phone','Status','Deliveries','Active',''],P.filter(mt).map(p=>[esc(p.name),esc(p.phone),`<span class="b ${cls(p.status)}">${p.status}</span> `+sel(PS,p.status,`pStat.bind(0,${p.id})`),O.filter(o=>o.partner==p.id&&o.status==='Delivered').length,O.filter(o=>o.partner==p.id&&['Preparing','Out for Delivery'].includes(o.status)).length,acts('p',p.id)]))},
+tracking(){const o=O.find(x=>x.id==trk)||O[0];if(!o)return'<h2>Tracking</h2><p>No orders</p>';const n=ST.indexOf(o.status);return`<h2>Real-time Tracking</h2><div class=bar><select style="max-width:260px" onchange="trk=+this.value;go('tracking')">${O.map(x=>`<option value=${x.id} ${x.id==o.id?'selected':''}>#${x.id} · ${nm(C,x.cust)}</option>`)}</select><button onclick=adv()>▶ Simulate next status</button></div><div class=card><b>#${o.id}</b> — ${nm(R,o.rest)} → ${nm(C,o.cust)}<br><span style="color:var(--mu)">Partner: ${nm(P,o.partner)} · Payment: ${o.pay}</span><div class=steps>${['⏳ Pending','🔄 Preparing','🛵 Out for Delivery','✅ Delivered'].map((s,i)=>`<div class="st ${n>=i&&n<4?'on':''}">${s}</div>`).join('')}</div>${n===4?'<span class="b Cancelled">❌ Cancelled</span>':`<h3>${n===3?'Delivered ✔':'Estimated arrival: '+o.eta+' min'}</h3>`}</div>`},
+routes(){return`<h2>Route Optimization</h2><div class=bar><select id=rp style="max-width:260px" onchange=routeGo()>${P.map(p=>`<option value=${p.id}>${p.name}</option>`)}</select></div><div class=two><div class=card id=rl></div><div class=card id=rm></div></div>`},
+payments(){const t=rev(),rf=O.filter(o=>o.paid==='Refunded').reduce((s,o)=>s+o.amt,0);return`<h2>Payments</h2><div class=grid><div class="card stat"><b>${cur(t)}</b><span>Collected</span></div><div class="card stat"><b>${cur(rf)}</b><span>Refunded</span></div><div class="card stat"><b>${cur(O.filter(o=>o.paid==='Pending').reduce((s,o)=>s+o.amt,0))}</b><span>Pending (COD)</span></div></div>`+tbl(['Txn','Order','Customer','Method','Amount','Status',''],O.map(o=>['TXN'+(9000+o.id),o.id,nm(C,o.cust),o.pay,cur(o.amt),`<span class="b ${o.paid}">${o.paid}</span>`,o.paid==='Paid'?`<button class="s d" onclick=refund(${o.id})>Refund</button>`:'']))},
+customers(){return`<h2>Customers</h2>${bar(me.role==='Admin'?'<button onclick=cEdit(0)>+ Add Customer</button>':'')}`+tbl(['Name','Email','Phone','Preferences','Orders',''],C.filter(mt).map(c=>[esc(c.name),esc(c.email),esc(c.phone),esc(c.pref),O.filter(o=>o.cust==c.id).length,`<button class="s g" onclick=cHist(${c.id})>History</button> `+(me.role==='Admin'?acts('c',c.id):'')]))},
+reviews(){return`<h2>Reviews & Ratings</h2>${bar('<button onclick=addRev()>+ Add Review</button>')}`+tbl(['Type','Name','Rating','Comment'],V.filter(mt).map(v=>[v.type,esc(v.target),`<span style="color:var(--o)">${stars(v.rating)}</span>`,esc(v.text)]))},
+reports(){return`<h2>Reports</h2><div class=grid><div class=card><b>Delivery Report</b><p style="color:var(--mu)">${O.length} orders, ${O.filter(o=>o.status==='Delivered').length} delivered</p><button onclick="exp('delivery')">⬇ CSV</button></div><div class=card><b>Revenue Report</b><p style="color:var(--mu)">Total ${cur(rev())}</p><button onclick="exp('revenue')">⬇ CSV</button></div><div class=card><b>Performance Report</b><p style="color:var(--mu)">${P.length} partners</p><button onclick="exp('perf')">⬇ CSV</button></div></div><button class=g onclick=window.print()>🖨 Print / Save as PDF</button>`}};
+function routeGo(){const pid=+$('#rp').value,st=O.filter(o=>o.partner==pid&&['Preparing','Out for Delivery'].includes(o.status));let pos=R.find(r=>r.id==(st[0]||{}).rest)||{x:50,y:50},left=st.map(o=>({o,c:C.find(c=>c.id==o.cust)})).filter(s=>s.c),tot=0,seq=[],pts=[pos];
+while(left.length){left.sort((a,b)=>dist(pos,a.c)-dist(pos,b.c));const n=left.shift(),d=dist(pos,n.c);tot+=d;seq.push([n,d]);pos=n.c;pts.push(n.c)}
+$('#rl').innerHTML=seq.length?`<b>Optimized stops (nearest-first)</b><ol>${seq.map(([n,d])=>`<li>#${n.o.id} → ${esc(n.c.name)} <span style="color:var(--mu)">(${(d/10).toFixed(1)} km)</span></li>`).join('')}</ol><b>Total: ${(tot/10).toFixed(1)} km · ~${Math.round(tot*0.8)+seq.length*5} min</b>`:'No active orders for this partner.';
+$('#rm').innerHTML=`<svg viewBox="0 0 100 100" style="width:100%;background:var(--bg);border-radius:10px"><polyline points="${pts.map(p=>p.x+','+p.y).join(' ')}" fill=none stroke="#F97316" stroke-width=1 stroke-dasharray="2 1"/>${pts.map((p,i)=>`<circle cx=${p.x} cy=${p.y} r=3 fill="${i?'#F97316':'#16a34a'}"/><text x=${p.x+4} y=${p.y+1} font-size=4 fill="currentColor">${i?i:'Start'}</text>`).join('')}</svg>`}
+const AFTER={routes:routeGo,dashboard(){const css=getComputedStyle(document.documentElement).getPropertyValue('--tx');ch.push(new Chart($('#c1'),{type:'doughnut',data:{labels:ST,datasets:[{data:ST.map(s=>O.filter(o=>o.status===s).length),backgroundColor:['#fdba74','#fb923c','#F97316','#16a34a','#dc2626']}]},options:{plugins:{title:{display:true,text:'Orders by status'}}}}));
+ch.push(new Chart($('#c2'),{type:'bar',data:{labels:R.map(r=>r.name),datasets:[{label:'Revenue (₹)',data:R.map(r=>O.filter(o=>o.rest==r.id&&o.paid==='Paid').reduce((s,o)=>s+o.amt,0)),backgroundColor:'#F97316'}]},options:{plugins:{title:{display:true,text:'Revenue by restaurant'}}}}))}};
+auth();
+</script></body></html>
